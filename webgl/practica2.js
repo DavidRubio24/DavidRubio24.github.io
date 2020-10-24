@@ -146,10 +146,10 @@ function loadScene(){
 	var geopinza = Pinza();
 	pinzaDe = new THREE.Mesh(geopinza, materialAntebrazo);
 	pinzaIz = new THREE.Mesh(geopinza, materialAntebrazo);
-	pinzaDe.position.y = 10;
-	pinzaIz.position.y = -10;
-	pinzaDe.position.x = 10
-	pinzaIz.position.x = 10
+	pinzaDe.position.y = 8;
+	pinzaIz.position.y = -8;
+	pinzaDe.position.x = 10;
+	pinzaIz.position.x = 10;
 	pinzaDe.rotation.y = Math.PI / 2;
 	pinzaIz.rotation.y = Math.PI / 2;
 	pinzaIz.rotation.x = Math.PI;
@@ -173,8 +173,13 @@ function update(){
 	angle += Math.PI / 700;
 	camera.position.x = 300 * Math.cos(angle);
 	camera.position.z = 300 * Math.sin(angle);
-	camera.position.y = 110 + 150 * Math.cos(angle / 3);
+	//camera.position.y = 110 + 150 * Math.cos(angle / 3);
 	camera.lookAt(center);
+
+	pinzaDe.position.y =  8 + 6 * Math.sin(11 * angle);
+	pinzaIz.position.y = -8 - 6 * Math.sin(11 * angle);
+
+	antebrazo.rotation.z = - (1 - Math.cos(7 * angle)) * Math.PI / 10;
 }
 
 function render(){
