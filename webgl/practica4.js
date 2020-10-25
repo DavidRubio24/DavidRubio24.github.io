@@ -18,6 +18,7 @@ var cameraControls;
 var effectController;
 
 init();
+var keyboard	= new THREEx.KeyboardState();
 loadScene();
 setupGui()
 render();
@@ -53,6 +54,14 @@ function init() {
 
 	window.addEventListener('resize', updateAspectRatio);
 	renderer.domElement.addEventListener('dblclick', changeColor);
+
+
+	// STATS
+	stats = new Stats();
+	stats.setMode( 0 );					// Muestra FPS
+	stats.domElement.style.removeProperty('top');
+	stats.domElement.style.bottom = '0px';
+	document.body.appendChild( stats.domElement );
 }
 
 function updateAspectRatio(){
@@ -61,6 +70,7 @@ function updateAspectRatio(){
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 }
+
 
 function changeColor(event){
 	// Invierte el color del elemento seleccionado
@@ -72,6 +82,22 @@ function changeColor(event){
 		intersection[0].object.material.color.g = 1 - intersection[0].object.material.color.g;
 		intersection[0].object.material.color.b = 1 - intersection[0].object.material.color.b;
 	}
+}
+
+
+
+var h;
+
+function reset(){
+	effectController.robotX = 0;
+	effectController.robotZ = 0;
+	effectController.giroBase = 0;
+	effectController.giroBrazo = 0;
+	effectController.giroAntebrazoY = 0;
+	effectController.giroAntebrazoZ = 0;
+	effectController.giroPinza = 0;
+	effectController.aperturaPinza = 7;
+	h.updateDisplay();
 }
 
 function setupGui(){
@@ -87,24 +113,15 @@ function setupGui(){
 		giroPinza: 0,
 		aperturaPinza: 7,
 		vista: 'planta',
-		reset: function(){
-			effectController.robotX = 0;
-			effectController.robotZ = 0;
-			effectController.giroBase = 0;
-			effectController.giroBrazo = 0;
-			effectController.giroAntebrazoY = 0;
-			effectController.giroAntebrazoZ = 0;
-			effectController.giroPinza = 0;
-			effectController.aperturaPinza = 7;
-			h.updateDisplay();
-		},
+		stats: true,
+		reset: reset,
 	};
 
 	// Creación interfaz
 	var gui = new dat.GUI();
 
 	// Construcción del menú
-	var h = gui.addFolder("Control robot");
+	h = gui.addFolder("Control robot");
 	h.add(effectController, "robotX", -450, 450, 1).name("Posicion x:");
 	h.add(effectController, "robotZ", -450, 450, 1).name("Posicion z:");
 	h.add(effectController, "giroBase", -180, 180, 1).name("Giro Base:");
@@ -115,12 +132,20 @@ function setupGui(){
 	h.add(effectController, "aperturaPinza", 0, 15, 1).name("Apertura Pinza:");
 	h.add(effectController, "reset").name("Reset");
 	h.add(effectController, "vista", ["planta", "alzado", "perfil", "ninguna"]).name("Vista:");
+	h.add(effectController, "stats").name("Stats");
 	h.open();
 }
+
+
 
 function update(){
 	angle += Math.PI / 700;
 
+	if (effectController.stats && !document.body.contains(stats.domElement)) {
+		document.body.appendChild(stats.domElement);
+	} else if (!effectController.stats && document.body.contains(stats.domElement)){
+		document.body.removeChild(stats.domElement);
+	}
 
 	if (brazo.rotation.z != -effectController.giroBrazo * Math.PI / 180) {
 		planta.b = effectController.giroBrazo;
@@ -139,7 +164,36 @@ function update(){
 
 	plantaView = effectController.planta;
 
+
+
+	if (keyboard.pressed('left') && robot.position.z < 450 ){
+		robot.position.z += 1;
+		effectController.robotZ -= 1;
+		h.updateDisplay();
+	}
+	if (keyboard.pressed('right')  && -450 < robot.position.z) {
+		robot.position.z -= 1;
+		effectController.robotZ += 1;
+		h.updateDisplay();
+	}
+	if (keyboard.pressed('down')  && robot.position.x < 450) {
+		robot.position.x -= 1;
+		effectController.robotX += 1;
+		h.updateDisplay();
+	}
+	if (keyboard.pressed('up')  && -450 < robot.position.x) {
+		robot.position.x += 1;
+		effectController.robotX -= 1;
+		h.updateDisplay();
+	}
+	if (keyboard.pressed('escape')){
+	reset();
+	}
+
+	stats.update();
 }
+
+
 
 function render() {
 	requestAnimationFrame(render);

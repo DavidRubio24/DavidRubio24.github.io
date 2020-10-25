@@ -24,5 +24,10 @@ Mi práctica 3 difiere del enunciado en lo mismo que la práctica 2 y que al hac
 
 ### Práctica 4
 
-
+Mi práctica 4 difiere del enunciado en:
+* Distintos elementos (suelo, base, brazo, antebrazo) tienen distintos colores que se pueden invertir con doble click.
+* La posición del robot se puede controlar tanto con teclas como con barra deslizante.
+* Se puede ver el alzado, planta, perfil o nada en la esquina superior izquierda.
+* La tecla *escape* resetea la posición y postura del robot.
+* Se muestran estadísticas en la esquina inferior izquierda que se pueden quitar y poner desde los controles.
 [davidrubio24.github.io/webgl/practica4.html](https://davidrubio24.github.io/webgl/practica4.html)

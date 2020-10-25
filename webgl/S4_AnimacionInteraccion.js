@@ -106,8 +106,7 @@ function loadScene()
 
 }
 
-function setupGui()
-{
+function setupGui() {
 	// Definicion de los controles
 	effectController = {
 		mensaje: 'Interfaz',
