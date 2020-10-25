@@ -140,5 +140,5 @@ function loadScene(){
 	scene.add(new THREE.AxesHelper(300));
 	scene.add(suelo);
 	scene.add(robot);
-	scene.fog = new THREE.Fog(0);
+	scene.fog = new THREE.Fog(0, 0, 2000);
 }

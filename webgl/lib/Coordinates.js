@@ -5,9 +5,11 @@ var Coordinates = {
 		var size = params.size !== undefined ? params.size:100;
 		var scale = params.scale !== undefined ? params.scale:0.1;
 		var orientation = params.orientation !== undefined ? params.orientation:"x";
+		var color = params.color != undefined ? params.color:'white';
+		var wireframe = params.wireframe != undefined ? params.wireframe:false;
 		var grid = new THREE.Mesh(
 			new THREE.PlaneGeometry(size, size, size * scale, size * scale),
-			new THREE.MeshBasicMaterial({ color: 0x555555, wireframe: true }) 
+			new THREE.MeshBasicMaterial({ color: color, wireframe: wireframe }) 
 			);
 		if (orientation === "x") {
 			grid.rotation.x = - Math.PI / 2;

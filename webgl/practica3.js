@@ -22,7 +22,7 @@ function init() {
 	// Render
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth * .97, window.innerHeight * .955);
-	renderer.setClearColor(new THREE.Color(0x0000AA));
+	// renderer.setClearColor(new THREE.Color(0x0000AA));   // Se ve mejor con el fondo negro
 	renderer.autoClear = false;
 	document.body.appendChild(renderer.domElement);
 

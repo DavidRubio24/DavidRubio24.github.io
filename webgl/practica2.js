@@ -27,7 +27,7 @@ function init() {
 	// Render
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setClearColor(new THREE.Color(0x0000AA));
+	// renderer.setClearColor(new THREE.Color(0x0000AA));   // Se ve mejor con el fondo negro
 	document.body.appendChild(renderer.domElement);
 
 	// Escena
