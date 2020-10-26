@@ -14,8 +14,19 @@ var robot, base, brazo, eje, esparrago, rotula, antebrazo, disco, nervios, mano,
 
 var cameraControls;
 
+console.log('init()...');
 init();
-loadScene();
+
+console.log('tree()...');
+tree();
+
+console.log('materialsBasic()...');
+materialsBasic();
+
+console.log('positions()...');
+positions();
+
+console.log('render()...');
 render();
 
 function init() {
@@ -31,7 +42,7 @@ function init() {
 
 	// Camara Perspectiva
 	var aspectRatio = window.innerWidth / window.innerHeight;
-	camera = new THREE.PerspectiveCamera(50, aspectRatio, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(50, aspectRatio, 0.1, 2000);
 	camera.position.set(300, 120, 0);
 	//camera.lookAt(new THREE.Vector3(0, 500, 0));  // No sirve al usar OrbitControls
 	scene.add(camera);
@@ -74,17 +85,11 @@ function changeColor(event){
 
 function update(){
 	angle += Math.PI / 700;
-	/*
-	camera.position.x = 300 * Math.cos(angle);
-	camera.position.z = 300 * Math.sin(angle);
-	camera.position.y = 120 + 100 * Math.cos(angle / 3);
-	camera.lookAt(center);
-	 */
 
 	pinzaDe.position.y =  8 + 6 * Math.sin(11 * angle);
 	pinzaIz.position.y = -8 - 6 * Math.sin(11 * angle);
 
-	antebrazo.rotation.z = - (1 - Math.cos(7 * angle)) * Math.PI / 10;
+	antebrazo.rotation.z = (Math.cos(7 * angle) - 1) * Math.PI / 10;
 }
 
 function render(){

@@ -27,10 +27,13 @@ console.log('tree()...');
 tree();
 
 console.log('materialsBasic()...');
-materialsBasic();
+materials();
 
 console.log('positions()...');
 positions();
+
+console.log('lights()...');
+lights();
 
 console.log('setupGui()...')
 setupGui();
@@ -44,6 +47,7 @@ function init() {
 	renderer.setSize(window.innerWidth * .97, window.innerHeight * .955);
 	// renderer.setClearColor(new THREE.Color(0x0000AA));   // Se ve mejor con el fondo negro
 	renderer.autoClear = false;
+	renderer.shadowMap.enabled = true;
 	document.body.appendChild(renderer.domElement);
 
 	// Escena
@@ -79,13 +83,75 @@ function init() {
 	document.body.appendChild( stats.domElement );
 }
 
+
+function lights(){
+	luzAmbiental = new THREE.AmbientLight('white', 0.3);
+	luzPuntual   = new THREE.PointLight(  'white', 0.7, 0, 0);
+	luzFocal     = new THREE.SpotLight(   'red', 0.7, 0, Math.PI/4, 0.9);
+
+	luzPuntual.position.set(400, 400, 0);
+	luzFocal.position.set(0, 300, 400);
+	luzFocal.target.position.set(0, 280, 0);
+	luzFocal.castShadow = true;
+	luzFocal.shadow.camera.far = 1000;
+
+	scene.add(luzAmbiental);
+	scene.add(luzPuntual);
+	scene.add(luzFocal);
+}
+
+
+function materials(){
+
+	let sueloTextura = new THREE.TextureLoader().load('textures/table.jpg');
+	suelo.material = new THREE.MeshLambertMaterial({color: 'white', map: sueloTextura});
+
+
+	var path = 'textures/House/', format = '.jpg';
+	var urls = [
+		path + 'posx' + format, path + 'negx' + format,
+		path + 'posy' + format, path + 'negy' + format,
+		path + 'posz' + format, path + 'negz' + format
+	];
+
+	scene.background = new THREE.CubeTextureLoader().load( urls );
+	rotula.material  = new THREE.MeshLambertMaterial( {	// color: 0xff6600,
+																											envMap: scene.background,
+																											combine: THREE.MixOperation,
+																											reflectivity: 0.8 } );
+
+
+	let baseTextura = new THREE.TextureLoader().load('textures/metal.jpg');
+	base.material = new THREE.MeshPhongMaterial({map: baseTextura, specular: 'white', shininess: 70});
+
+
+	let brazoTextura = new THREE.TextureLoader().load('textures/metal_128.jpg');
+	giveMaterial(new THREE.MeshPhongMaterial({map: brazoTextura, specular: 'white'}),
+		[brazo, eje, esparrago]);
+
+	let antebrazoTextura = new THREE.TextureLoader().load('textures/wood512.jpg');
+	giveMaterial(new THREE.MeshLambertMaterial({map: antebrazoTextura}),
+		[antebrazo, disco, nervio, mano, pinzaIz, pinzaDe].concat(nervio.children));
+
+
+	// Shadows
+	let elements = [robot, base, brazo, eje, esparrago, rotula, antebrazo, disco, mano, pinzaIz, pinzaDe].concat(nervio.children);
+	for (let i = 0; i < elements.length; i++){
+		elements[i].castShadow = true;
+		elements[i].receiveShadow = true;
+	}
+	suelo.receiveShadow = true;
+
+}
+
+
+
 function updateAspectRatio(){
 	renderer.setSize(window.innerWidth * .97, window.innerHeight * .955);
 
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 }
-
 
 function changeColor(event){
 	// Invierte el color del elemento seleccionado
@@ -102,6 +168,8 @@ function changeColor(event){
 
 
 var h;
+
+function setFocoColor(color){	luzFocal.color = new THREE.Color(color);}
 
 function reset(){
 	effectController.robotX = 0;
@@ -127,9 +195,10 @@ function setupGui(){
 		giroAntebrazoZ: 0,
 		giroPinza: 0,
 		aperturaPinza: 7,
-		vista: 'planta',
-		stats: true,
+		vista: 'ninguna',
+		stats: false,
 		reset: reset,
+		foco: 'rgb(255,0,0)'
 	};
 
 	// Creación interfaz
@@ -148,7 +217,8 @@ function setupGui(){
 	h.add(effectController, "reset").name("Reset");
 	h.add(effectController, "vista", ["planta", "alzado", "perfil", "ninguna"]).name("Vista:");
 	h.add(effectController, "stats").name("Stats");
-	h.open();
+	h.addColor(effectController, "foco").name("Color foco: ").onChange(setFocoColor);
+	h.close();
 }
 
 
@@ -162,7 +232,7 @@ function update(){
 		document.body.removeChild(stats.domElement);
 	}
 
-	if (brazo.rotation.z != -effectController.giroBrazo * Math.PI / 180) {
+	if (brazo.rotation.z !== -effectController.giroBrazo * Math.PI / 180) {
 		planta.b = effectController.giroBrazo;
 		planta.updateProjectionMatrix();
 	}

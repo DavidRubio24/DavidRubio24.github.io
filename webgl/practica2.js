@@ -18,16 +18,25 @@ var robot, base, brazo, eje, esparrago, rotula, antebrazo, disco, nervios, mano,
 
 var center = new THREE.Vector3(0, 110, 0);
 
-
+console.log('init()...');
 init();
-loadScene();
+
+console.log('tree()...');
+tree();
+
+console.log('materialsBasic()...');
+materialsBasic();
+
+console.log('positions()...');
+positions();
+
+console.log('render()...');
 render();
 
 function init() {
 	// Render
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	// renderer.setClearColor(new THREE.Color(0x0000AA));   // Se ve mejor con el fondo negro
 	document.body.appendChild(renderer.domElement);
 
 	// Escena

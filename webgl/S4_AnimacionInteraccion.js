@@ -132,9 +132,10 @@ function setupGui() {
 	var sensorColor = h.addColor(effectController, "color").name("Color");
 	sensorColor.onChange( function(color){
 							peonza.traverse( function(hijo){
-								if( hijo instanceof THREE.Mesh ) hijo.material.color = new THREE.Color(color);
+								if( hijo instanceof THREE.Mesh )
+									hijo.material.color = new THREE.Color(color);
 							})
-						  });
+	});
 }
 
 function startAnimation(){

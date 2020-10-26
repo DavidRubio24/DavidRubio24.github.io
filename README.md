@@ -9,7 +9,6 @@ Cualquier pregunta o comentario respecto a las prácticas o el proyecto puede se
 
 Mi práctica 2 difiere del enunciado en los siguientes aspectos:
 * La **cámara se mueve** automáticamente alrededor del robot (tanto en angulo como en altura) para poder ver el robot desde todas las perspectivas.
-* El suelo no es transparente, es verde, y parece estar iluminado desde la cámara (he puesto Fog a la escena).
 * El **robot se mueve**: las pinzas se abren y cierran y el antebrazo se inclina respecto a la rótula.
 * Distintas partes tienen distintos **colores**.
 
@@ -30,4 +29,13 @@ Mi práctica 4 difiere del enunciado en:
 * Se puede ver el alzado, planta, perfil o nada en la esquina superior izquierda.
 * La tecla *escape* resetea la posición y postura del robot.
 * Se muestran estadísticas en la esquina inferior izquierda que se pueden quitar y poner desde los controles.
+
 [davidrubio24.github.io/webgl/practica4.html](https://davidrubio24.github.io/webgl/practica4.html)
+
+
+### Práctica 5
+ 
+En mi practica 5 las pinzas tienen textura y el foco se puede cambiar de color con los controles.
+ 
+ [davidrubio24.github.io/webgl/practica5.html](https://davidrubio24.github.io/webgl/practica5.html)
+ 
