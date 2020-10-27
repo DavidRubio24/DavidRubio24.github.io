@@ -102,7 +102,9 @@ function lights(){
 
 function materials(){
 
-	let sueloTextura = new THREE.TextureLoader().load('textures/table.jpg');
+	let sueloTextura = new THREE.TextureLoader().load('textures/metal_table.jpg');
+	sueloTextura.repeat.set(3,3);
+	sueloTextura.wrapS = sueloTextura.wrapT = THREE.MirroredRepeatWrapping;
 	suelo.material = new THREE.MeshLambertMaterial({color: 'white', map: sueloTextura});
 
 
