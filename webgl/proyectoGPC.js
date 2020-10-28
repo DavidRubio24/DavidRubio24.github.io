@@ -7,7 +7,7 @@
 
 
 
-var renderer, scene, camera, orto;
+var renderer, scene, camera, orto, alzado, planta, perfil;
 
 var cameraControls;
 
@@ -56,8 +56,7 @@ function init() {
 	scene.add(camera);
 
 	// Camaras Ortograficas
-	orto = new THREE.OrthographicCamera(-500, 500, 500, -500, 1, 1000);
-	scene.add(orto);
+	viewsCameras(scene, 500);
 
 	// OrbitControls
 	cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -93,7 +92,7 @@ function listeners(){
 	domEvents.addEventListener(eje, 'dblclick', salto);
 	domEvents.addEventListener(suelo, 'dblclick', huida);
 	domEvents.addEventListener(pelota,   'dblclick', function (event){
-		let pathW = 'textures/world.jpg', pathL = 'textures/ball4.jpg';
+		let pathW = 'textures/world.jpg', pathL = 'textures/ball.jpg';
 		pelota.material = new THREE.MeshLambertMaterial({map: new THREE.TextureLoader().load(luxoBall ? pathW : pathL)});
 		luxoBall = !luxoBall;
 	});
@@ -190,10 +189,11 @@ function setupGui(){
 		giroBrazo: -40,
 		giroAntebrazoY: 0,
 		giroAntebrazoZ: 90,
-		giroFocoZ: 120,
+		giroFocoZ: 115,
 		giroFocoY: 0,
 		vista: 'ninguna',
 		stats: false,
+		fixCamera: false,
 		reset: reset,
 		foco: 'rgb(0,90,255)'
 	};
@@ -209,11 +209,12 @@ function setupGui(){
 	h.add(effectController, "giroBrazo", -50, 50, 1).name("Giro Brazo:");
 	h.add(effectController, "giroAntebrazoY", -180, 180, 1).name("Giro Antebrazo Y: ");
 	h.add(effectController, "giroAntebrazoZ",  -90,  90, 1).name("Giro Antebrazo Z: ");
-	h.add(effectController, "giroFocoZ", -130, 130, 1).name("Giro Foco Z:");
+	h.add(effectController, "giroFocoZ", -120, 120, 1).name("Giro Foco Z:");
 	h.add(effectController, "giroFocoY", -180, 180, 1).name("Giro Foco Y:");
 	h.add(effectController, "reset").name("Reset");
 	h.add(effectController, "vista", ["planta", "alzado", "perfil", "ninguna"]).name("Vista:");
 	h.add(effectController, "stats").name("Stats");
+	h.add(effectController, "fixCamera").name("Fija camara vistas");
 	h.addColor(effectController, "foco").name("Color foco: ").onChange(setFocoColor);
 	h.close();
 }
@@ -265,26 +266,7 @@ function render() {
 	requestAnimationFrame(render);
 	update();
 
-	if (effectController.vista !== "ninguna") {
-		var size = Math.min(window.innerWidth, window.innerHeight) / 4;
-		renderer.setViewport(0, 0, size, size);
-		var lookat = new THREE.Vector3(0, 100, 0);
-		antebrazo.localToWorld(lookat);
-		orto.lookAt(lookat);
-	}
-	if (effectController.vista === "planta") {
-		orto.position.set(lookat.x, lookat.y + 400, lookat.z);
-		orto.up = new THREE.Vector3(-1, 0, 0);
-		renderer.render(scene, orto);
-	} else if (effectController.vista === "alzado") {
-		orto.position.set(lookat.x + 500, lookat.y, lookat.z);
-		orto.up = new THREE.Vector3(0, 1, 0);
-		renderer.render(scene, orto);
-	} else if (effectController.vista === "perfil"){
-		orto.position.set(lookat.x, lookat.y, lookat.z + 400);
-		orto.up = new THREE.Vector3(0, 1, 0);
-		renderer.render(scene, orto);
-	}
+	showViews(effectController.vista, effectController.fixCamera);
 
 	renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
 	renderer.render(scene, camera);

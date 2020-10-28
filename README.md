@@ -7,11 +7,11 @@ Cualquier pregunta o comentario respecto a las prácticas o el proyecto puede se
 ### Proyecto
 *El hijo de Luxo jr. (la lámpara de Pixar) ha encontrado e hinchado la pelota de su padre y esta juagando con ella.*
 
-Hay un video reproduciéndose repetidamente que se puede pausar haciendo doble click sobre él o con la tecla espacio. Se puede activar el volumen con la tecla M.
+Hay un video reproduciéndose repetidamente que se puede pausar haciendo doble click sobre él o con la tecla espacio. Se puede activar/desactivar el volumen con la tecla M.
 
 Con los controles se puede añadir una vista en alzado, planta o perfil. También se pueden añadir estadísticas.
 
-Una lámpara con una luz focal de color se puede mover con los controles o las flechas. Se puede cambiar el color de la luz con los controles y se puede apagar y encender haciendo doble click en la cabeza de la lámpara.
+La lámpara con una luz focal de color se puede mover con los controles o las flechas. Se puede cambiar el color de la luz con los controles y se puede apagar y encender haciendo doble click en la cabeza de la lámpara.
 
 Haciendo doble click sobre la pelota se convierte en globo terráqueo. Haciendo doble click sobre el suelo la pelota se mueve. Haciendo doble click en la base de la lámpara esta se gira para mirar a la pelota.
 

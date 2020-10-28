@@ -60,10 +60,7 @@ function init() {
 	scene.add(camera);
 
 	// Camaras Ortograficas
-	planta = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 301);
-	alzado = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 301);
-	perfil = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 301);
-	scene.add(planta);
+	viewsCameras(scene, 250);
 
 	// OrbitControls
 	cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -186,6 +183,7 @@ function setupGui(){
 		aperturaPinza: 7,
 		vista: 'ninguna',
 		stats: false,
+		fixCamera: false,
 		reset: reset,
 		foco: 'rgb(255,0,0)'
 	};
@@ -206,6 +204,8 @@ function setupGui(){
 	h.add(effectController, "reset").name("Reset");
 	h.add(effectController, "vista", ["planta", "alzado", "perfil", "ninguna"]).name("Vista:");
 	h.add(effectController, "stats").name("Stats");
+	h.add(effectController, "fixCamera").name("Fija camara vistas");
+	fixCamera: false,
 	h.addColor(effectController, "foco").name("Color foco: ").onChange(setFocoColor);
 	h.close();
 }
@@ -271,26 +271,8 @@ function render() {
 	requestAnimationFrame(render);
 	update();
 
-	if (effectController.vista !== "ninguna") {
-		var size = Math.min(window.innerWidth, window.innerHeight) / 4;
-		renderer.setViewport(0, 0, size, size);
-		var lookat = new THREE.Vector3();
-		rotula.getWorldPosition(lookat);
-	}
-	if (effectController.vista === "planta") {
-		planta.position.set(lookat.x, 300, lookat.z);
-		planta.up = new THREE.Vector3(-1, 0, 0);
-		planta.lookAt(lookat);
-		renderer.render(scene, planta);
-	} else if (effectController.vista === "alzado") {
-		alzado.position.set(lookat.x + 150, lookat.y, lookat.z);
-		alzado.lookAt(lookat);
-		renderer.render(scene, alzado);
-	} else if (effectController.vista === "perfil"){
-		perfil.position.set(lookat.x, lookat.y, lookat.z + 150);
-		perfil.lookAt(lookat);
-		renderer.render(scene, perfil);
-	}
+
+	showViews(effectController.vista, effectController.fixCamera);
 
 	renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
 	renderer.render(scene, camera);

@@ -137,7 +137,7 @@ function tree(){
 
 
 
-	scene.add(new THREE.AxesHelper(300));
+	//scene.add(new THREE.AxesHelper(300));
 
 }
 
@@ -150,7 +150,7 @@ function giveMaterial(material, elements){
 function materials(){
 
 
-	var path = 'textures/House/', format = '.jpg';
+	var path = 'textures/GoldenGateBridge/', format = '.jpg';
 	var urls = [
 		path + 'posx' + format, path + 'negx' + format,
 		path + 'posy' + format, path + 'negy' + format,
@@ -166,7 +166,7 @@ function materials(){
 	suelo.material = new THREE.MeshLambertMaterial({color: 'white', map: sueloTextura});
 
 
-	let pelotaTextura = new THREE.TextureLoader().load('textures/ball4.jpg');
+	let pelotaTextura = new THREE.TextureLoader().load('textures/ball.jpg');
 	pelota.material = new THREE.MeshLambertMaterial({map: pelotaTextura});
 
 	campana.material = new THREE.MeshPhongMaterial({color: 'white', side: THREE.DoubleSide});
@@ -243,12 +243,20 @@ function positions(){
 
 }
 
+function get_angle(l, p){
+	let angle;
+	if (p.x < l.x)
+		angle = Math.PI - Math.atan((p.z-l.z)/(p.x - l.x));
+	else
+		angle = -Math.atan((p.z-l.z)/(p.x - l.x));
+	return angle < 0 ? 2 * Math.PI + angle : angle;
+}
+
 function salto(event){
 	console.log('girando');
 	var p = pelota.position;
 	var l = luxo.position;
-	var d = -Math.atan((p.z-l.z)/(p.x - l.x));
-	var turn = new TWEEN.Tween(luxo.rotation).to({y: d}, 500);
+	var turn = new TWEEN.Tween(luxo.rotation).to({y: get_angle(l, p)}, 500);
 
 	var c = new THREE.Vector3();
 	campana.localToWorld(c);
@@ -257,10 +265,17 @@ function salto(event){
 	turn.start();
 }
 
-
 function huida(event){
 	var p = pelota.position;
-	var to = new THREE.Vector3(2000*Math.random()-1000, p.y, 2000*Math.random()-1000);
-	var move = new TWEEN.Tween(pelota.position).to({x:to.x, y:to.y, z:to.z}, 100);
+	let ratio = .4;
+	var to = new THREE.Vector3(2000*(1-Math.pow(Math.random(),2))-1000, p.y, (2000*Math.pow(Math.random(),2)-1000)*(1-ratio)+ratio*p.z);
+	var move = new TWEEN.Tween(pelota.position).to(to, 3*p.distanceTo(to));
+
+	let r = pelota.geometry.parameters.radius;
+	let t = {z: pelota.rotation.z - (to.x - p.x) / r};
+
+	var rotate = new TWEEN.Tween(pelota.rotation).to(t, 3 * p.distanceTo(to));
+
+	rotate.start();
 	move.start();
 }
