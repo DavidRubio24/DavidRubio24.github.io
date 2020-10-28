@@ -16,6 +16,8 @@ La lámpara con una luz focal de color se puede mover con los controles o las fl
 Haciendo doble click sobre la pelota se convierte en globo terráqueo. Haciendo doble click sobre el suelo la pelota se mueve. Haciendo doble click en la base de la lámpara esta se gira para mirar a la pelota.
 
 [davidrubio24.github.io/webgl/proyectoGPC.html](https://davidrubio24.github.io/webgl/proyectoGPC.html)
+
+
 [Video](https://youtu.be/2sYKDo6cPKs)
 
 ### Práctica 2
