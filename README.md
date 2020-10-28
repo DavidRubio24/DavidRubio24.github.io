@@ -5,7 +5,7 @@ Cualquier pregunta o comentario respecto a las prácticas o el proyecto puede se
 [davidrubio.24+muiarfid@gmail.com](mailto:davidrubio.24+muiarfid@gmail.com)
 
 ### Proyecto
-*El hijo de Luxo jr. (la lámpara de Pixar) ha encontrado e hinchado la pelota de su padre y esta juagando con ella.*
+*El hijo de Luxo jr. (la lámpara de Pixar) ha encontrado e hinchado la pelota de su padre y está jugando con ella.*
 
 Hay un video reproduciéndose repetidamente que se puede pausar haciendo doble click sobre él o con la tecla espacio. Se puede activar/desactivar el volumen con la tecla M.
 
@@ -16,6 +16,7 @@ La lámpara con una luz focal de color se puede mover con los controles o las fl
 Haciendo doble click sobre la pelota se convierte en globo terráqueo. Haciendo doble click sobre el suelo la pelota se mueve. Haciendo doble click en la base de la lámpara esta se gira para mirar a la pelota.
 
 [davidrubio24.github.io/webgl/proyectoGPC.html](https://davidrubio24.github.io/webgl/proyectoGPC.html)
+[Video](https://youtu.be/2sYKDo6cPKs)
 
 ### Práctica 2
 
