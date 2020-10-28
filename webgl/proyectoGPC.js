@@ -9,11 +9,10 @@
 
 var renderer, scene, camera, orto, alzado, planta, perfil;
 
-var cameraControls;
+var cameraControls, effectController, reloj0, reloj;
 
 var luzDireccional, luzFocal, luzAmbiental;
 
-var effectController;
 
 var keyboard	= new THREEx.KeyboardState();
 
@@ -30,13 +29,15 @@ materials();
 
 positions();
 
+physics();
+
 shadows(true);
 
 
 setupGui();
 
 listeners();
-
+reloj0.start()
 render();
 
 function init() {
@@ -52,7 +53,7 @@ function init() {
 	// Camara Perspectiva
 	var aspectRatio = window.innerWidth / window.innerHeight;
 	camera = new THREE.PerspectiveCamera(50, aspectRatio, 0.1, 4000);
-	camera.position.set(1000, 600, 0);
+	camera.position.set(1400, 600, 0);
 	scene.add(camera);
 
 	// Camaras Ortograficas
@@ -75,6 +76,8 @@ function init() {
 	document.body.appendChild( stats.domElement );
 
 
+	reloj0 = new THREE.Clock(false);
+	reloj = new THREE.Clock(false);
 }
 
 
@@ -99,12 +102,13 @@ function listeners(){
 
 	function changeLight(event) {
 		if (lightOn) {
-			luzFocal.intensity = bombilla.material.emissiveIntensity = 0;
+			luzFocal.intensity = bombilla.material.emissiveIntensity = campanaInterior.material.emissiveIntensity = 0;
 			luzFocal.castShadow = false;
 		} else {
 			luzFocal.intensity = 2;
 			setFocoColor(effectController.foco);
 			bombilla.material.emissiveIntensity = 10;
+			campanaInterior.material.emissiveIntensity = 1;
 			luzFocal.castShadow = true;
 		}
 		lightOn = !lightOn;
@@ -165,6 +169,7 @@ function setFocoColor(color){
 	luzFocal.color = new THREE.Color(color);
 	bombilla.material.color = luzFocal.color;
 	bombilla.material.emissive = luzFocal.color;
+	campanaInterior.material.emissive = luzFocal.color;
 }
 
 function reset(){
@@ -243,10 +248,19 @@ function updateControls(){
 
 	h.updateDisplay();
 }
-
-function update(){
+var xxx = 1;
+function update() {
 
 	TWEEN.update();
+
+	if (reloj0.getElapsedTime() > 15) {
+		reloj.start();
+		reloj0.start();
+		reloj0.stop();
+	}
+	world.step(reloj.getDelta());
+	pelota.position.copy(pelotaFisica.position);
+	pelota.quaternion.copy(pelotaFisica.quaternion);
 
 	updateControls();
 

@@ -1,5 +1,5 @@
 
-var suelo, pantalla, pelota, luxo, cilindro, campanaBase, eje, bola, tetraedro, nervio1, nervio2, nervio3, rotula, nervio4, nervio5, triangulo, eje2, campana, bombilla, target;
+var suelo, pantalla, pelota, luxo, cilindro, campanaBase, eje, bola, tetraedro, nervio1, nervio2, nervio3, rotula, nervio4, nervio5, triangulo, eje2, campana, campanaInterior, bombilla, target;
 
 var video, videoImage, videoImageContext, videoTexture;
 
@@ -60,7 +60,7 @@ function tree(){
 	suelo = new THREE.Mesh(new THREE.PlaneGeometry( 2000, 2000, 200, 200));
 
 
-	pelota = new THREE.Mesh(new THREE.SphereGeometry(40, 32, 32, 1));
+	pelota = new THREE.Mesh(new THREE.SphereGeometry(60, 32, 32, 1));
 
 	luxo  		= new THREE.Object3D();
 	base  		= new THREE.Object3D();
@@ -84,6 +84,7 @@ function tree(){
 	eje2 = new THREE.Mesh(new THREE.CylinderGeometry(triangulo.geometry.parameters.height / 2, triangulo.geometry.parameters.height / 2, 50, 20));
 
 	campana = new THREE.Mesh(CampanaGeometry(20, 110, 70, Math.PI/2,  32, 16));
+	campanaInterior = new THREE.Mesh(campana.geometry);
 	bombilla = new THREE.Mesh(BombillaGeometry(10, 30, 35, 32, 16));
 	target = new THREE.Object3D();
 
@@ -132,6 +133,7 @@ function tree(){
 	antebrazo.add(triangulo);
 	antebrazo.add(eje2);
 	antebrazo.add(campana);
+	campana.add(campanaInterior);
 	campana.add(bombilla);
 	bombilla.add(target);
 
@@ -169,7 +171,8 @@ function materials(){
 	let pelotaTextura = new THREE.TextureLoader().load('textures/ball.jpg');
 	pelota.material = new THREE.MeshLambertMaterial({map: pelotaTextura});
 
-	campana.material = new THREE.MeshPhongMaterial({color: 'white', side: THREE.DoubleSide});
+	campana.material = new THREE.MeshPhongMaterial({color: 'white', side: THREE.FrontSide});
+	campanaInterior.material = new THREE.MeshPhongMaterial({color: 'white', side: THREE.BackSide, emissive: luzFocal.color})
 
 	cilindro.material = new THREE.MeshLambertMaterial({color: 'black'});
 	campanaBase.material = campana.material;
@@ -211,7 +214,7 @@ function positions(){
 	pantalla.position.y = 50 +pantalla.geometry.parameters.height / 2;
 	pantalla.position.z = - 1050;
 
-	pelota.position.set(500, 40, 100);
+	pelota.position.set(-600, 2000 + pelota.geometry.parameters.radius, 200);
 
 	cilindro.position.y = cilindro.geometry.parameters.height / 2;
 	eje.position.y = eje.geometry.parameters.height / 2;
@@ -266,16 +269,61 @@ function salto(event){
 }
 
 function huida(event){
-	var p = pelota.position;
-	let ratio = .4;
-	var to = new THREE.Vector3(2000*(1-Math.pow(Math.random(),2))-1000, p.y, (2000*Math.pow(Math.random(),2)-1000)*(1-ratio)+ratio*p.z);
-	var move = new TWEEN.Tween(pelota.position).to(to, 3*p.distanceTo(to));
+	pelotaFisica.velocity.set(Math.random()*2000 - 1000, Math.random()*2000, Math.random()*2000 - 1000);
+}
 
-	let r = pelota.geometry.parameters.radius;
-	let t = {z: pelota.rotation.z - (to.x - p.x) / r};
+var world, pelotaFisica;
+function physics(){
+	world = new CANNON.World();
+	world.gravity.set(0,-3000,0);
+	world.solver.iterations = 1;
 
-	var rotate = new TWEEN.Tween(pelota.rotation).to(t, 3 * p.distanceTo(to));
 
-	rotate.start();
-	move.start();
+	// Material y comportamiento
+	var groundMaterial = new CANNON.Material("groundMaterial");
+	var pelotaMaterial = new CANNON.Material("sphereMaterial");
+	world.addMaterial( pelotaMaterial );
+	world.addMaterial( groundMaterial );
+	var sphereGroundContactMaterial = new CANNON.ContactMaterial(groundMaterial, pelotaMaterial,
+		{ friction: 3,
+			restitution: 0.7 });
+	world.addContactMaterial(sphereGroundContactMaterial);
+
+	// Suelo
+	var ground = new CANNON.Body({ mass: 0, material: groundMaterial });
+	ground.addShape(new CANNON.Plane());
+	ground.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
+	world.addBody(ground);
+
+	{
+		// Paredes
+		var backWall = new CANNON.Body( {mass:0, material:groundMaterial} );
+		backWall.addShape( new CANNON.Plane() );
+		backWall.position.z = -1000;
+		world.addBody( backWall );
+
+		var frontWall = new CANNON.Body( {mass:0, material:groundMaterial} );
+		frontWall.addShape( new CANNON.Plane() );
+		frontWall.quaternion.setFromEuler(0,Math.PI,0,'XYZ');
+		frontWall.position.z = 1000;
+		world.addBody( frontWall );
+
+		var leftWall = new CANNON.Body( {mass:0, material:groundMaterial} );
+		leftWall.addShape( new CANNON.Plane() );
+		leftWall.position.x = -1000;
+		leftWall.quaternion.setFromEuler(0,Math.PI/2,0,'XYZ');
+		world.addBody( leftWall );
+
+		var rightWall = new CANNON.Body( {mass:0, material:groundMaterial} );
+		rightWall.addShape( new CANNON.Plane() );
+		rightWall.position.x = 1000;
+		rightWall.quaternion.setFromEuler(0,-Math.PI/2,0,'XYZ');
+		world.addBody( rightWall );
+	}
+
+
+	pelotaFisica = new CANNON.Body( {mass: 1, material: pelotaMaterial} );
+	pelotaFisica.addShape( new CANNON.Sphere( pelota.geometry.parameters.radius ) );
+	pelotaFisica.position = pelota.position;
+	world.addBody( pelotaFisica );
 }
