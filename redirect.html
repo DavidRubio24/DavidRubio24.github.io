@@ -1,21 +1,41 @@
-<!DOCTYPE html> 
-<html> 
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>URL Parameter Redirection</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="redirect.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    
+    <div class="box">
+      <h1 id="redirect-status">Redirection</h1>
+      <p id="invalid-keyword"></p>
+    </div>
 
-	<link href="logos/Redirecting-favicon.png">
-	<title>Redirecting...</title> 
-	<meta http-equiv="refresh" content="0; url = https://youtu.be/2sYKDo6cPKs" /> 
-</head> 
+    <div class="box instructions-box">
+      <h2>How to Set This Up in Chrome</h2>
+      <ol>
+        <li>Open Chrome and navigate to <code>chrome://settings/searchEngines</code>.</li>
+        <li>Under <strong>Site search</strong>, click <strong>Add</strong>.</li>
+        <li>Configure the fields as follows:
+          <ul>
+            <li><strong>Search engine:</strong> Custom Redirect</li>
+            <li><strong>Shortcut:</strong> <code>r</code> (or your preferred shortcut keyword)</li>
+            <li><strong>URL with %s in place of query:</strong> <br>
+                <code>https://yourdomain.com/redirect.html?dict=https://yourdomain.com/dict.js&to=%s</code>
+            </li>
+          </ul>
+        </li>
+        <li>Click <strong>Save</strong>. Now typing <code>r gmail</code> in your address bar will instantly route you.</li>
+      </ol>
 
-<body> 
-	<h1 style="text-align:center;font-family: Arial, Helvetica, sans-serif;"> 
-		Proyecto GPC
-	</h1> 
+      <h2>How to Modify the Address List</h2>
+      <p>To change, add, or remove shortcuts, edit your external <code>dict.js</code> file. Update the pairs inside the <code>keywordUrls</code> object following this structure:</p>
+      <p><code>"shortcut": "https://destination-url.com",</code></p>
+    </div>
 
-
-	<p> Esta página redirecciona al video del proyecto. Si no se redirecciona en unos segundos <a href="https://youtu.be/2sYKDo6cPKs">clicke aqui</a>.</p>
-</body> 
-
-</html> 
-
+  </div>
+</body>
+</html>
